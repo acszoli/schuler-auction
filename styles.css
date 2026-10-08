@@ -496,3 +496,19 @@ a.btn:not([href]),a.link:not([href]),a.dl:not([href]),.mn .subin a:not([href]),.
 .fav-sheet a:not([href]){pointer-events:none}
 .ctl .cnt[hidden]{display:none}
 @media (prefers-reduced-motion:reduce){.sheet,.sheet-bd{transition:none}}
+
+/* Hero – lamellás váltás */
+[data-slider="blinds"] .slides{display:block;position:relative;transform:none!important;transition:none}
+[data-slider="blinds"] .slides>*{position:absolute;inset:0;flex:none}
+[data-slider="blinds"] .slides>*::after{display:none}
+[data-slider="blinds"] .slides img{transition:none;transform:none!important}
+[data-slider="blinds"]::after{content:"";position:absolute;inset:0;z-index:20;pointer-events:none;background:linear-gradient(to bottom,transparent 71.75%,rgba(0,0,0,.6))}
+[data-slider="blinds"] .arrows,[data-slider="blinds"] .dots{z-index:30}
+[data-slider="blinds"] .strip{position:absolute;top:0;bottom:0;overflow:hidden;z-index:3}
+[data-slider="blinds"] .strip img{position:absolute;top:0;height:100%;max-width:none;object-fit:cover;transition:none}
+[data-slider="blinds"] .dots i{position:relative;overflow:hidden;opacity:1;background:rgba(255,255,255,.4)}
+[data-slider="blinds"] .dots i::after{content:"";position:absolute;inset:0;background:#fff;transform:scaleX(0);transform-origin:0 50%}
+[data-slider="blinds"] .dots i.on::after{transform:scaleX(1);animation:dotfill var(--dur,5.2s) linear}
+[data-slider="blinds"].paused .dots i.on::after{animation-play-state:paused}
+@keyframes dotfill{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){[data-slider="blinds"] .dots i.on::after{animation:none}}

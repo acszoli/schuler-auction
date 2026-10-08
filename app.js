@@ -350,7 +350,55 @@
   if (reduce || !('IntersectionObserver' in window)) $$('[data-count]').forEach(function (el) { countUp(el); });
 
   /* ---------- Slider / carousel ---------- */
-  $$('[data-slider]').forEach(function (root) {
+  /* Hero: „lamellák” váltás – az új kép 5 függőleges sávban érkezik, váltakozva fentről/lentről */
+  function blindsSlider(root) {
+    var slides = $$('.slides > *', root), n = slides.length, cur = 0, busy = false, timer = null, hover = false, vis = true;
+    var N = 5, STAG = 110, MS = 900, DUR = 5200, EASE = 'cubic-bezier(.22,.8,.24,1)';
+    var dotsWrap = $('.dots', root), dots = [];
+    slides.forEach(function (s, i) { s.style.visibility = i === 0 ? 'visible' : 'hidden'; s.style.zIndex = i === 0 ? 2 : 1; });
+    for (var i = 0; i < n; i++) { (function (k) { var d = document.createElement('i'); d.addEventListener('click', function () { go(k, k > cur ? 1 : -1, true); }); dotsWrap.appendChild(d); dots.push(d); })(i); }
+    function mark() {
+      dots.forEach(function (d, j) { d.classList.remove('on'); if (j === cur) { void d.offsetWidth; d.classList.add('on'); } });
+      dotsWrap.style.setProperty('--dur', DUR + 'ms');
+    }
+    function sched() { clearTimeout(timer); if (reduce || hover || !vis) return; timer = setTimeout(function () { go((cur + 1) % n, 1); }, DUR); }
+    function fin(k) {
+      slides.forEach(function (s, j) { s.style.visibility = j === k ? 'visible' : 'hidden'; s.style.zIndex = j === k ? 2 : 1; s.getAnimations({ subtree: true }).forEach(function (a) { a.cancel(); }); });
+      $$('.strip', root).forEach(function (e) { e.remove(); }); busy = false;
+    }
+    function go(k, dir, user) {
+      k = (k + n) % n; if (busy || k === cur) return;
+      busy = true; cur = k; mark();
+      var B = slides[k], src = $('img', B);
+      root.dispatchEvent(new CustomEvent('slide', { detail: k }));
+      if (reduce) { B.style.visibility = 'visible'; B.style.zIndex = 3; B.animate({ opacity: [0, 1] }, { duration: 400 }); setTimeout(function () { fin(k); }, 420); return; }
+      var w = root.clientWidth, h = root.clientHeight, sw = w / N;
+      for (var i = 0; i < N; i++) {
+        var s = document.createElement('div'); s.className = 'strip'; s.style.left = (i * sw) + 'px'; s.style.width = (sw + 0.5) + 'px';
+        var im = new Image(); im.src = src.currentSrc || src.src; im.alt = ''; im.style.width = w + 'px'; im.style.left = (-i * sw) + 'px';
+        s.appendChild(im); root.insertBefore(s, $('.arrows', root));
+        var idx = dir > 0 ? i : N - 1 - i;
+        s.animate({ clipPath: [i % 2 === 0 ? 'inset(100% 0 0 0)' : 'inset(0 0 100% 0)', 'inset(0)'] }, { duration: MS, delay: idx * STAG, easing: EASE, fill: 'both' });
+        im.animate({ transform: ['scale(1.18)', 'scale(1)'] }, { duration: MS, delay: idx * STAG, easing: EASE, fill: 'both' });
+      }
+      setTimeout(function () { fin(k); sched(); }, MS + N * STAG + 60);
+    }
+    var p = $('.prev', root), nx = $('.next', root);
+    p.addEventListener('click', function () { go(cur - 1, -1, true); });
+    nx.addEventListener('click', function () { go(cur + 1, 1, true); });
+    var x0 = null;
+    root.addEventListener('pointerdown', function (e) { x0 = e.clientX; });
+    root.addEventListener('pointerup', function (e) { if (x0 === null) return; var dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 40) go(cur + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1, true); });
+    root.addEventListener('pointercancel', function () { x0 = null; });
+    root.addEventListener('mouseenter', function () { hover = true; root.classList.add('paused'); clearTimeout(timer); });
+    root.addEventListener('mouseleave', function () { hover = false; root.classList.remove('paused'); mark(); sched(); });
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { vis = es[0].isIntersecting; if (vis) { mark(); sched(); } else clearTimeout(timer); }, { threshold: .3 }).observe(root);
+    root._go = function (k) { go(k, k > cur ? 1 : -1, true); };
+    mark(); sched();
+  }
+  $$('[data-slider="blinds"]').forEach(blindsSlider);
+
+  $$('[data-slider]:not([data-slider="blinds"])').forEach(function (root) {
     var track = $('.slides', root), n = track.children.length, cur = 0, timer, dotsWrap = $('.dots', root);
     var dots = [];
     if (dotsWrap) { for (var i = 0; i < n; i++) { (function (k) { var d = document.createElement('i'); d.addEventListener('click', function () { go(k, true); }); dotsWrap.appendChild(d); dots.push(d); })(i); } }
