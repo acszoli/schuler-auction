@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Antique Weaponry | Schuler Auktionen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Judson:wght@400;700&family=Nunito+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page">
+  <div id="site-header"></div>
+
+  <section style="padding:0 16px 20px;display:flex;flex-direction:column;gap:32px">
+    <a class="back" href="auction.html" style="padding:20px 0 0"><span data-i="left"></span>Back</a>
+    <div data-stagger style="display:flex;flex-direction:column;gap:4px">
+      <h1 data-reveal>Antique Weaponry</h1>
+      <p data-reveal style="font:600 16px/1.4 var(--sans);opacity:.6">September 2026 - A182</p>
+    </div>
+  </section>
+
+  <!-- Eszköztár -->
+  <section style="padding:16px;display:flex;flex-direction:column;gap:12px" data-reveal>
+    <label class="search"><span data-i="search"></span><input type="search" placeholder="Search lots, artists, makers…" id="q"></label>
+    <div class="controls"><b id="count">38 lots</b>
+      <button class="ctl"><span data-i="sliders"></span>Filter<span class="cnt">3</span></button>
+      <button class="ctl">Sort<span data-i="down"></span></button></div>
+    <div class="controls" style="font:700 12px var(--sans);color:var(--stone)"><span style="flex:1">Show / filter items</span>
+      <button class="ctl" id="unsold" aria-pressed="false" style="gap:8px;padding:0 12px"><i id="chk" style="width:20px;height:20px;border:1px solid var(--line);border-radius:4px;display:grid;place-items:center;background:var(--white);transition:background .3s,border-color .3s"></i>Unsold only</button></div>
+  </section>
+
+  <!-- TÉTELEK -->
+  <section class="sec" style="padding-top:8px;gap:24px">
+    <div class="lotlist cut" id="lotlist">
+      <a class="lot" href="lot.html" data-reveal data-q="cinquedea italian short sword 1604"><div class="im"><img src="assets/w-cinquedea.jpg" alt="Cinquedea" loading="lazy"><button class="fav" data-fav="1604" aria-label="Save"><span data-i="heart"></span></button></div>
+        <div class="d"><div><div class="ln">LOT 1604</div><h3>Short sword, Cinquedea</h3><b class="t">Italy</b><div class="m">Steel, horn and gilt silver · circa 1500</div></div><hr>
+        <div class="res"><div><div class="lbl">Estimate</div><div class="val">CHF 14,000–20,000</div></div><div class="hammer"><div class="lbl">Hammer price</div><div class="val">CHF 18,000</div></div></div></div></a>
+      <div class="lot" data-reveal data-q="german halberd axe spike 1605"><div class="im"><img src="assets/w-halberd.jpg" alt="Halberd" loading="lazy"><button class="fav" data-fav="1605" aria-label="Save"><span data-i="heart"></span></button></div>
+        <div class="d"><div><div class="ln">LOT 1605</div><h3>Pierced axe-and-spike halberd</h3><b class="t">Germany</b><div class="m">Iron and walnut · 17th century</div></div><hr>
+        <div class="res"><div><div class="lbl">Estimate</div><div class="val">CHF 6,000–9,000</div></div><div class="hammer"><div class="lbl">Hammer price</div><div class="val">CHF 8,500</div></div></div></div></div>
+      <div class="lot" data-reveal data-q="wheel-lock pistol german firearm 1609"><div class="im"><img src="assets/w-pistol.jpg" alt="Wheel-lock" loading="lazy"><button class="fav" data-fav="1609" aria-label="Save"><span data-i="heart"></span></button></div>
+        <div class="d"><div><div class="ln">LOT 1609</div><h3>Wheel-lock pistol</h3><b class="t">Germany</b><div class="m">Steel and ebonised wood · 17th century</div></div><hr>
+        <div class="res"><div><div class="lbl">Estimate</div><div class="val">CHF 12,000–18,000</div></div><div class="hammer"><div class="lbl">Hammer price</div><div class="val">CHF 16,500</div></div></div></div></div>
+      <div class="lot" data-reveal data-q="persian riveted chain-mail shirt 1612"><div class="im"><img src="assets/w-chainmail.jpg" alt="Chain mail" loading="lazy"><button class="fav" data-fav="1612" aria-label="Save"><span data-i="heart"></span></button></div>
+        <div class="d"><div><div class="ln">LOT 1612</div><h3>Riveted chain-mail shirt</h3><b class="t">Persia</b><div class="m">Iron and brass · 18th century</div></div><hr>
+        <div class="res"><div><div class="lbl">Estimate</div><div class="val">CHF 8,000–12,000</div></div><div class="hammer"><div class="lbl">Hammer price</div><div class="val">CHF 10,500</div></div></div></div></div>
+      <div class="lot" data-reveal data-q="morion helmet spanish bronze lion 1618"><div class="im"><img src="assets/w-helmet.jpg" alt="Helmet" loading="lazy"><button class="fav" data-fav="1618" aria-label="Save"><span data-i="heart"></span></button></div>
+        <div class="d"><div><div class="ln">LOT 1618</div><h3>Embossed morion helmet</h3><b class="t">Spain</b><div class="m">Bronze · 16th century style</div></div><hr>
+        <div class="res"><div><div class="lbl">Estimate</div><div class="val">CHF 4,000–7,000</div></div><div class="hammer"><div class="lbl">Hammer price</div><div class="val">CHF 6,200</div></div></div></div></div>
+      <div class="lot" data-reveal data-q="william tell bronze swiss sculpture 1623"><div class="im"><img src="assets/w-tell.jpg" alt="Bronze group" loading="lazy"><button class="fav" data-fav="1623" aria-label="Save"><span data-i="heart"></span></button></div>
+        <div class="d"><div><div class="ln">LOT 1623</div><h3>William Tell and his son</h3><b class="t">Switzerland</b><div class="m">Patinated bronze · circa 1900</div></div><hr>
+        <div class="res"><div><div class="lbl">Estimate</div><div class="val">CHF 5,000–8,000</div></div><div class="hammer"><div class="lbl">Hammer price</div><div class="val">CHF 7,400</div></div></div></div></div>
+    </div>
+    <div class="more" data-reveal><small>6 of 38 lots</small><div class="track"><i style="--w:54px"></i></div><a class="btn"><span>Load more</span><span data-i="right"></span></a></div>
+  </section>
+
+
+  <!-- DOCUMENTS -->
+  <section class="sec ivory">
+    <div class="head" data-stagger>
+      <div class="eyebrow">Downloads</div>
+      <h2 data-reveal>Documents &amp; information</h2>
+      <p data-reveal style="line-height:1.4">Catalogues, bidding guidance, results and legal information.</p>
+    </div>
+    <div class="list16" data-stagger>
+      <a class="dl" data-reveal><div><b>Text Catalogue</b><span>Full lot descriptions and sale details</span></div><span data-i="download"></span></a>
+      <a class="dl" data-reveal><div><b>Highlight Catalogue</b><span>Featured lots and auction highlights</span></div><span data-i="download"></span></a>
+      <a class="dl" data-reveal><div><b>List of Sold Lot Numbers</b><span>Post-sale results by lot number</span></div><span data-i="download"></span></a>
+      <a class="dl" data-reveal><div><b>Bidding form</b><span>Absentee and telephone bidding form</span></div><span data-i="download"></span></a>
+      <a class="dl" data-reveal><div><b>How to bid</b><span>Step-by-step bidding instructions</span></div><span data-i="download"></span></a>
+      <a class="dl" data-reveal><div><b>Conditions of Sale</b><span>Terms and conditions of the auction</span></div><span data-i="download"></span></a>
+    </div>
+  </section>
+
+  <!-- AFTER SALE -->
+  <section class="sec navy on-dark" style="padding:48px 24px;gap:24px" data-stagger>
+    <div class="head">
+      <div class="eyebrow" style="color:var(--white)">After sale</div>
+      <h2 data-reveal>Missed the auction?</h2>
+      <p data-reveal style="line-height:1.4;opacity:.78">Selected unsold lots may still be available after the auction.</p>
+    </div>
+    <a class="btn white" href="auction.html#lots" data-reveal><span>Explore after-sale lots</span><span data-i="right"></span></a>
+  </section>
+
+  <!-- SELLING -->
+  <section class="sec bg">
+    <div class="head" data-stagger>
+      <div class="eyebrow">Selling with us</div>
+      <h2 data-reveal>From First Contact to the Best Result</h2>
+      <p data-reveal style="line-height:1.25">Discreet, informed and personal. We care for individual objects with the same dedication as entire collections and estates.</p>
+    </div>
+    <div class="photo" data-reveal="clip"><img src="assets/selling.jpg" alt="Specialist examining the back of a framed painting" data-parallax="0.03" loading="lazy"></div>
+    <div class="process" data-stagger>
+      <div data-reveal><div class="ci"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l1.5-2h7L17 8h3a1 1 0 011 1v9a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1z"/><circle cx="12" cy="13" r="3.5"/></svg></div><div><small>01</small><b>Show Us Your Object</b><p>Send us photos and the key details. An initial appraisal is free and without obligation.</p></div></div>
+      <div data-reveal><div class="ci"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.9-4.9M7.8 10.6l2 2 3.4-4"/></svg></div><div><small>02</small><b>Personal Valuation</b><p>Our specialists review provenance, condition and market – on site if needed.</p></div></div>
+      <div data-reveal><div class="ci"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9.5" y="4" width="10" height="5" rx="1" transform="rotate(45 14.5 6.5)"/><path d="M12.5 10.5L4 19M13 20.5h8"/></svg></div><div><small>03</small><b>Sell with the Best Outcome</b><p>We recommend the auction, date and estimate, and guide you through to settlement.</p></div></div>
+    </div>
+    <div class="list16" data-reveal>
+      <a class="btn"><span>Start selling with us</span><span data-i="right"></span></a>
+      <a class="btn outline-light" href="index.html#sell"><span>How consignment works</span><span data-i="right"></span></a>
+    </div>
+  </section>
+
+  <div id="site-footer"></div>
+</div>
+<script src="app.js"></script>
+<script>
+  (function(){
+    var q=document.getElementById('q'),c=document.getElementById('count'),list=document.querySelectorAll('#lotlist .lot');
+    q.addEventListener('input',function(){var v=q.value.trim().toLowerCase(),n=0;
+      list.forEach(function(l){var m=!v||l.getAttribute('data-q').indexOf(v)>-1;l.style.display=m?'':'none';if(m)n++;});
+      c.textContent=v?n+' of 6 loaded lots':'38 lots';});
+    var u=document.getElementById('unsold'),k=document.getElementById('chk');
+    u.addEventListener('click',function(){var on=u.getAttribute('aria-pressed')!=='true';u.setAttribute('aria-pressed',on);
+      k.style.background=on?'var(--blue)':'var(--white)';k.style.borderColor=on?'var(--blue)':'var(--line)';
+      k.innerHTML=on?'<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>':'';});
+  })();
+</script>
+</body>
+</html>
