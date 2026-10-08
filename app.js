@@ -17,6 +17,8 @@
     download: '<svg viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>',
     mail: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7l8.5 6 8.5-6"/></svg>',
     phone: '<svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A15 15 0 013 6a2 2 0 012-2z"/></svg>',
+    check: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    arr: '<svg viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></svg>',
     sliders: '<svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>',
     x: '<svg viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></svg>',
     globe: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>',
@@ -70,7 +72,7 @@
       '<header class="top"><button class="burger" aria-label="Menu"><i></i><i></i><i></i></button>' +
       '<a class="logo" href="index.html"><img src="assets/logo.svg" alt="Schuler" data-fb="SCHULER"></a>' +
       '<div class="icons"><a class="icbtn" href="auction.html#lots" aria-label="Search">' + I.search + '</a>' +
-      '<a class="icbtn" href="auction.html" aria-label="Favorites">' + I.heart + '<span class="badge">' + favs.length + '</span></a></div></header>' +
+      '<button class="icbtn" data-favs aria-label="Favorites">' + I.heart + '<span class="badge">' + favs.length + '</span></button></div></header>' +
       menuHTML();
   }
   var top = $('.top'), burger = $('.burger');
@@ -92,7 +94,7 @@
       '<div class="mp-head"><button class="mp-close" aria-label="Close menu">' + I.x + '</button>' +
       '<a class="logo" href="index.html"><img src="assets/logo.svg" alt="Schuler" data-fb="SCHULER"></a>' +
       '<div class="icons"><a class="icbtn" href="auction.html#lots" aria-label="Search">' + I.search + '</a>' +
-      '<a class="icbtn" href="auction.html" aria-label="Favorites">' + I.heart + '<span class="badge">' + favs.length + '</span></a></div></div>' +
+      '<button class="icbtn" data-favs aria-label="Favorites">' + I.heart + '<span class="badge">' + favs.length + '</span></button></div></div>' +
       '<div class="mp-body">' +
       '<form class="mp-search" action="auction.html"><span class="si">' + I.search + '</span><input id="mp-q" type="search" placeholder="Search auctions, lots, artists…" aria-label="Search"></form>' +
       '<nav class="mp-nav">' +
@@ -160,6 +162,139 @@
       '<div class="legal"><div class="l"><a>Privacy</a><a>Terms</a><a>Imprint</a></div><div>© 2026 Schuler Auktionen AG. All rights reserved.</div></div></footer>';
   }
   icons(document);
+
+
+  /* ---------- Alulról beúszó panelek: Filter / Sort / Save your favourites ---------- */
+  var FILTERS = [
+    { g: 'Category', k: 'cat', o: [['Fine Art', 82], ['Antique Weaponry', 124, 1], ['Jewellery', 46], ['Watches', 38], ['Asian Art', 27], ['Furniture & Decorative Arts', 25]] },
+    { est: 1 },
+    { g: 'Lot status', k: 'st', o: [['All'], ['Sold', 0, 1], ['Unsold'], ['After-sale available']] },
+    { g: 'Auction day', k: 'day', o: [['10 September · Day 1'], ['11 September · Day 2', 0, 1], ['12 September · Day 3']] },
+    { jump: 1 }
+  ];
+  var SORTS = ['Lot number', 'Estimate: low to high', 'Estimate: high to low', 'Highest result', 'Recently added'];
+  var sortSel = 0, scrollY0 = 0;
+  var wrap = document.createElement('div');
+  wrap.className = 'sheet-wrap'; wrap.hidden = true;
+  wrap.innerHTML = '<div class="sheet-bd"></div><div class="sheet" role="dialog" aria-modal="true"></div>';
+  document.body.appendChild(wrap);
+  var sheetEl = $('.sheet', wrap);
+
+  function sheetHead(title) {
+    return '<div class="sh-head"><i class="sh-handle"></i><div class="sh-row"><h2>' + title + '</h2>' +
+      '<button class="sh-x" data-close aria-label="Close">' + I.x + '</button></div></div>';
+  }
+  function openSheet(html, cls) {
+    sheetEl.className = 'sheet ' + (cls || '');
+    sheetEl.innerHTML = html; icons(sheetEl);
+    wrap.hidden = false; void wrap.offsetWidth; wrap.classList.add('open');
+    document.documentElement.classList.add('sheet-lock');
+  }
+  function closeSheet() {
+    if (wrap.hidden) return;
+    wrap.classList.remove('open');
+    document.documentElement.classList.remove('sheet-lock');
+    setTimeout(function () { if (!wrap.classList.contains('open')) wrap.hidden = true; }, 380);
+  }
+  wrap.addEventListener('click', function (e) {
+    if (e.target.classList.contains('sheet-bd') || e.target.closest('[data-close]')) closeSheet();
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeSheet(); });
+
+  function filterCount() { return $$('.filter-sheet [data-chk].on').length; }
+  function updateFilterBadge() {
+    var n = FILTERS.reduce(function (a, f) { return a + (f.o ? f.o.filter(function (o) { return o[2]; }).length : 0); }, 0);
+    $$('.ctl .cnt').forEach(function (c) { c.textContent = n; c.hidden = !n; });
+  }
+  function chips() {
+    var h = '';
+    FILTERS.forEach(function (f) { if (f.o) f.o.forEach(function (o, i) {
+      if (o[2]) h += '<span class="chip">' + o[0].split('· ').pop().replace('&', '&amp;') + '<button data-chip="' + f.k + ':' + i + '" aria-label="Remove">' + I.x + '</button></span>'; }); });
+    return h;
+  }
+  function filterHTML() {
+    var h = sheetHead('Filter lots') + '<div class="sh-body"><div class="chips">' + chips() + '</div>';
+    FILTERS.forEach(function (f, n) {
+      if (n) h += '<hr class="sh-hr' + (f.k === 'day' ? ' gap' : '') + '">';
+      if (f.est) {
+        h += '<div class="fg"><h3>Estimate</h3><div class="est"><label><b>Minimum (CHF)</b><input value="1,000" inputmode="numeric"></label><label><b>Maximum (CHF)</b><input value="" placeholder="Any" inputmode="numeric"></label></div></div>';
+      } else if (f.jump) {
+        h += '<div class="fg"><h3>Lot number</h3><label class="fld"><b>Jump to lot</b><input id="jump" placeholder="Enter lot number" inputmode="numeric"></label></div>';
+      } else {
+        h += '<div class="fg"><h3>' + f.g + '</h3>';
+        f.o.forEach(function (o, i) {
+          h += '<button class="chk' + (o[2] ? ' on' : '') + '" data-chk="' + f.k + ':' + i + '"><i>' + I.check + '</i><span>' + o[0].replace('&', '&amp;') + '</span>' + (o[1] ? '<em>' + o[1] + '</em>' : '') + '</button>';
+        });
+        h += '</div>';
+      }
+    });
+    return h + '</div>';
+  }
+  function sortHTML() {
+    var h = sheetHead('Sort lots') + '<div class="sorts">';
+    SORTS.forEach(function (s, i) {
+      h += '<button class="sopt' + (i === sortSel ? ' on' : '') + '" data-sort="' + i + '"><i class="rd"></i><span>' + s + '</span>' + (i === sortSel ? '<em>' + I.check + '</em>' : '') + '</button>';
+    });
+    return h + '</div>';
+  }
+  function favHTML() {
+    return sheetHead('Save your favourites') +
+      '<div class="fav-msg"><b>Sign in to keep this lot saved</b><p>Create a personal watchlist across devices and return to your selected lots anytime.</p></div>' +
+      '<a class="btn">Sign in<span data-i="arr"></span></a><a class="fav-create">Create an account</a>' +
+      '<button class="fav-cont" data-close>Continue browsing<span data-i="arr"></span></button>';
+  }
+  function num(t) { var m = (t || '').replace(/[’'`,]/g, '').match(/\d+/); return m ? +m[0] : 0; }
+  function sortLots() {
+    var list = $('#lotlist'); if (!list) return;
+    var items = $$('.lot', list); if (!items.length) return;
+    items.forEach(function (el, i) { if (el.__o == null) el.__o = i; });
+    var key = [
+      function (el) { return num($('.ln', el).textContent); },
+      function (el) { return num($('.res .val', el).textContent); },
+      function (el) { return -num($('.res .val', el).textContent); },
+      function (el) { var h = $('.hammer .val', el); return -(h ? num(h.textContent) : 0); },
+      function (el) { return -el.__o; }
+    ][sortSel];
+    if (sortSel === 4) items.sort(function (a, b) { return b.__o - a.__o; });
+    else items.sort(function (a, b) { return key(a) - key(b) || a.__o - b.__o; });
+    items.forEach(function (el) { list.appendChild(el); });
+  }
+  document.addEventListener('click', function (e) {
+    var c = e.target.closest('.ctl');
+    if (c && !c.id) {
+      var isSort = /^\s*Sort/.test(c.textContent);
+      e.preventDefault();
+      if (isSort) openSheet(sortHTML(), 'sort-sheet'); else openSheet(filterHTML(), 'filter-sheet');
+      return;
+    }
+    if (e.target.closest('[data-favs]')) { e.preventDefault(); openSheet(favHTML(), 'fav-sheet'); return; }
+    var sc = e.target.closest('[data-chk]');
+    if (sc) {
+      var p = sc.getAttribute('data-chk').split(':'), f = FILTERS.filter(function (x) { return x.k === p[0]; })[0];
+      f.o[+p[1]][2] = f.o[+p[1]][2] ? 0 : 1;
+      sc.classList.toggle('on'); $('.chips', sheetEl).innerHTML = chips(); updateFilterBadge(); return;
+    }
+    var ch = e.target.closest('[data-chip]');
+    if (ch) {
+      var q = ch.getAttribute('data-chip').split(':'), g = FILTERS.filter(function (x) { return x.k === q[0]; })[0];
+      g.o[+q[1]][2] = 0;
+      var box = $('[data-chk="' + ch.getAttribute('data-chip') + '"]', sheetEl); if (box) box.classList.remove('on');
+      $('.chips', sheetEl).innerHTML = chips(); updateFilterBadge(); return;
+    }
+    var so = e.target.closest('[data-sort]');
+    if (so) {
+      sortSel = +so.getAttribute('data-sort'); sheetEl.innerHTML = sortHTML(); icons(sheetEl);
+      sortLots(); setTimeout(closeSheet, 280);
+    }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' || e.target.id !== 'jump') return;
+    var v = e.target.value.trim(), hit = null;
+    $$('#lotlist .lot').forEach(function (l) { if ($('.ln', l).textContent.replace(/\D/g, '') === v) hit = l; });
+    closeSheet();
+    if (hit) setTimeout(function () { hit.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }); }, 200);
+  });
+  updateFilterBadge();
 
   /* ---------- Kedvencek ---------- */
   function syncFavs() {
